@@ -21,7 +21,16 @@ android {
     }
 
     buildTypes {
+
+        debug {
+            // Development url (in this case it is same with the Production)
+            buildConfigField("String", "BASE_URL", "\"https://ios-kaizen.github.io\"")
+        }
+
         release {
+            // Production url
+            buildConfigField("String", "BASE_URL", "\"https://ios-kaizen.github.io\"")
+
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -38,6 +47,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
