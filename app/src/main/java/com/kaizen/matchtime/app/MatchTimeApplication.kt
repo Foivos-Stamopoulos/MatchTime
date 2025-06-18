@@ -1,4 +1,4 @@
-package com.kaizen.matchtime
+package com.kaizen.matchtime.app
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

@@ -1,4 +1,4 @@
-package com.kaizen.matchtime
+package com.kaizen.matchtime.app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.kaizen.matchtime.ui.theme.MatchTimeTheme
+import com.kaizen.matchtime.presentation.design_system.MatchTimeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
