@@ -6,6 +6,6 @@ import retrofit2.http.GET
 interface SportApi {
 
     @GET("MockSports/sports.json")
-    suspend fun fetchAllSports(): List<SportDto>
+    suspend fun fetchSports(): List<SportDto>
 
 }
