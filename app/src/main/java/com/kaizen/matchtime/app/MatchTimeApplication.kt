@@ -4,6 +4,4 @@ import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class MatchTimeApplication : Application() {
-
-}
+class MatchTimeApplication : Application()
