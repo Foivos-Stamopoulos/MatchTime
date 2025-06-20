@@ -36,7 +36,7 @@ import com.kaizen.matchtime.presentation.util.UiText
 @Composable
 fun EventGridItem(
     event: EventUI,
-    action: (SportAction) -> Unit
+    onAction: (SportAction) -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -61,7 +61,7 @@ fun EventGridItem(
             contentDescription = stringResource(R.string.content_description_favorite),
             tint = Yellow,
             modifier = Modifier.size(24.dp).clickable {
-                action(SportAction.OnEventFavoriteClick(event.id, !event.isFavorite))
+                onAction(SportAction.OnEventFavoriteClick(event.id, !event.isFavorite))
             }
         )
 
@@ -116,14 +116,14 @@ fun EventGridUnFavoriteItemPreview() {
     MatchTimeTheme {
         EventGridItem(
             event = EventUI(
-                "1",
-                "123",
+                "22911144",
+                "FOOT",
                 "Erithros Asteras Tripolis",
                 "Olympiakos",
                 false,
                 UiText.DynamicString("03:25:00")
             ),
-            {}
+            onAction = {}
         )
     }
 }

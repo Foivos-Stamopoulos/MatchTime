@@ -1,5 +1,17 @@
 package com.kaizen.matchtime.presentation.mapper
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BlurCircular
+import androidx.compose.material.icons.filled.SportsBasketball
+import androidx.compose.material.icons.filled.SportsEsports
+import androidx.compose.material.icons.filled.SportsGymnastics
+import androidx.compose.material.icons.filled.SportsHandball
+import androidx.compose.material.icons.filled.SportsHockey
+import androidx.compose.material.icons.filled.SportsSoccer
+import androidx.compose.material.icons.filled.SportsTennis
+import androidx.compose.material.icons.filled.SportsVolleyball
+import androidx.compose.material.icons.filled.TableRestaurant
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.kaizen.matchtime.R
 import com.kaizen.matchtime.domain.model.Event
 import com.kaizen.matchtime.domain.model.Sport
@@ -14,6 +26,7 @@ fun Sport.toUI(nowInSeconds: Long): SportUI {
         name = name,
         isExpanded = false,
         showOnlyFavorites = false,
+        icon = SportIconMapper.getIconForSport(id),
         events = activeEvents.map { it.toUI(nowInSeconds) }
     )
 }
@@ -48,4 +61,24 @@ private fun formatCountdown(startTimeInSeconds: Long, nowInSeconds: Long): UiTex
     val m = (secondsLeft % 3600) / 60
     val s = secondsLeft % 60
     return UiText.DynamicString(String.format(Locale.getDefault(),"%02d:%02d:%02d", h, m, s))
+}
+
+object SportIconMapper {
+
+    fun getIconForSport(sportId: String): ImageVector {
+        return when (sportId.uppercase()) {
+            "FOOT" -> Icons.Default.SportsSoccer
+            "BASK" -> Icons.Default.SportsBasketball
+            "TENN" -> Icons.Default.SportsTennis
+            "TABL" -> Icons.Default.SportsTennis
+            "VOLL" -> Icons.Default.SportsVolleyball
+            "ESPS" -> Icons.Default.SportsEsports
+            "ICEH" -> Icons.Default.SportsHockey
+            "HAND" -> Icons.Default.SportsHandball
+            "SNOO" -> Icons.Default.TableRestaurant
+            "FUTS" -> Icons.Default.SportsSoccer
+            "DART" -> Icons.Default.BlurCircular
+            else -> Icons.Default.SportsGymnastics
+        }
+    }
 }
