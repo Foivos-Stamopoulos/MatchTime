@@ -8,6 +8,12 @@ import javax.inject.Inject
 class SportsViewModel @Inject constructor() : ViewModel() {
 
 
-
+    fun onAction(action: SportAction) {
+        when (action) {
+            is SportAction.OnEventFavoriteClick -> TODO()
+            is SportAction.OnToggleExpand -> TODO()
+            is SportAction.OnToggleFilterFavoriteEvents -> TODO()
+        }
+    }
 
 }

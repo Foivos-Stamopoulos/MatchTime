@@ -13,12 +13,16 @@ fun SportsScreenRoot(
     viewModel: SportsViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
-    SportsScreen(modifier = modifier)
+    SportsScreen(
+        modifier = modifier,
+        onAction = viewModel::onAction
+    )
 }
 
 @Composable
 fun SportsScreen(
-    modifier: Modifier
+    modifier: Modifier,
+    onAction: (SportAction) -> Unit
 ) {
     Text(
         text = "Hello user!",
