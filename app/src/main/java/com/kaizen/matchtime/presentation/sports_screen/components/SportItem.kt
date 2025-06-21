@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -93,13 +94,29 @@ fun SportItem(
         }
 
         if (sport.isExpanded) {
+            val spacing = 8.dp
+            val horizontalPadding = 12.dp
+            val configuration = LocalConfiguration.current
+            val screenWidthDp = configuration.screenWidthDp.dp - horizontalPadding.times(2)
+
+            val itemSize = remember(screenWidthDp) {
+                val totalSpacing = spacing * 3
+                (screenWidthDp - totalSpacing) / 4
+            }
+
             FlowRow(
-                modifier = Modifier.background(Gray).fillMaxWidth()
+                modifier = Modifier.background(Gray)
+                    .fillMaxWidth()
+                    .padding(horizontal = horizontalPadding, vertical = 8.dp),
+                maxItemsInEachRow = 4,
+                horizontalArrangement = Arrangement.spacedBy(spacing),
+                verticalArrangement = Arrangement.spacedBy(spacing)
             ) {
                 sport.events.forEach { event ->
                     EventGridItem(
-                        event,
-                        {}
+                        modifier = Modifier.width(itemSize),
+                        event = event,
+                        onAction = {}
                     )
                 }
             }

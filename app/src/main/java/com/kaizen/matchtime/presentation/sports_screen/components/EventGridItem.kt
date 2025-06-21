@@ -35,14 +35,13 @@ import com.kaizen.matchtime.presentation.util.UiText
 
 @Composable
 fun EventGridItem(
+    modifier: Modifier = Modifier,
     event: EventUI,
     onAction: (SportAction) -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .width(120.dp)
-            .background(Color(0xFF3A3A3A))
+        modifier = modifier
             .padding(4.dp)
     ) {
         Text(
@@ -97,6 +96,7 @@ fun EventGridItem(
 fun EventGridFavoriteItemPreview() {
     MatchTimeTheme {
         EventGridItem(
+            modifier = Modifier,
             event = EventUI(
                 "1",
                 "123",
@@ -115,6 +115,7 @@ fun EventGridFavoriteItemPreview() {
 fun EventGridUnFavoriteItemPreview() {
     MatchTimeTheme {
         EventGridItem(
+            modifier = Modifier,
             event = EventUI(
                 "22911144",
                 "FOOT",
