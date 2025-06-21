@@ -56,7 +56,7 @@ class SportProvider : PreviewParameterProvider<List<SportUI>> {
                             "46925166",
                             "FOOT",
                             "Manchester City",
-                            "TottenhamHotspur",
+                            "Tottenham Hotspur",
                             false,
                             UiText.DynamicString("21:30:00")
                         )

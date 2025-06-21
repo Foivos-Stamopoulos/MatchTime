@@ -24,7 +24,6 @@ fun Sport.toUI(nowInSeconds: Long): SportUI {
     return SportUI(
         id = id,
         name = name,
-        isExpanded = false,
         showOnlyFavorites = false,
         icon = SportIconMapper.getIconForSport(id),
         events = activeEvents.map { it.toUI(nowInSeconds) }

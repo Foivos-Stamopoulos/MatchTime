@@ -57,7 +57,7 @@ fun EventGridItem(
 
         Icon(
             imageVector = if (event.isFavorite) Icons.Default.Star else Icons.Outlined.StarBorder,
-            contentDescription = stringResource(R.string.content_description_favorite),
+            contentDescription = if (event.isFavorite) stringResource(R.string.content_description_remove_from_favorites) else stringResource(R.string.content_description_add_to_favorites),
             tint = Yellow,
             modifier = Modifier.size(24.dp).clickable {
                 onAction(SportAction.OnEventFavoriteClick(event.id, !event.isFavorite))

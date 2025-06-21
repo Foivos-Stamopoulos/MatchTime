@@ -5,5 +5,11 @@
     <string name="error_unknown">Something went wrong</string>
     <string name="label_started">Started</string>
     <string name="label_versus">VS</string>
-    <string name="content_description_favorite">favorite</string>
+    <string name="content_description_add_to_favorites">Add to favorites</string>
+    <string name="content_description_remove_from_favorites">Remove from favorites</string>
+    <string name="content_description_favorite_switch">filter favorites switch</string>
+    <string name="content_description_expand_sport">expand sport content</string>
+    <string name="content_description_collapse_sport">collapse sport content</string>
+    <string name="error_can_not_connect">Can\'t connect</string>
+    <string name="button_refresh">Refresh</string>
 </resources>
