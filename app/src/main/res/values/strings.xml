@@ -12,5 +12,5 @@
     <string name="content_description_collapse_sport">collapse sport content</string>
     <string name="error_can_not_connect">Can\'t connect</string>
     <string name="button_refresh">Refresh</string>
-    <string name="label_no_sports">No sports to display</string>
+    <string name="label_no_events">No events to display</string>
 </resources>

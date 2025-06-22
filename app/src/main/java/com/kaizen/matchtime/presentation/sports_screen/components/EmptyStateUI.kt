@@ -21,7 +21,7 @@ fun EmptyStateUI() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = stringResource(R.string.label_no_sports),
+            text = stringResource(R.string.label_no_events),
             color = Color.White,
             style = MaterialTheme.typography.bodyLarge
         )

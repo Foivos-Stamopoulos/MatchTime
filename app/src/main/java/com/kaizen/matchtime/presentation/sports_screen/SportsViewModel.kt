@@ -12,62 +12,58 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class SportsViewModel @Inject constructor(
-    private val repository: SportRepository
+    repository: SportRepository
 ) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(SportsUiState())
-    val uiState = _uiState.asStateFlow()
 
     private val _events = MutableSharedFlow<SportEvent>()
     val events: SharedFlow<SportEvent> = _events.asSharedFlow()
 
     private val expandedStates = MutableStateFlow<Map<String, Boolean>>(emptyMap())
 
-    init {
-        loadSports()
+    val uiState: StateFlow<SportsUiState> = combine(
+        repository.getSportsWithFavoriteEvents(),
+        expandedStates,
+    ) { sportsResult, expandedMap ->
+
+        return@combine when (sportsResult) {
+            is Result.Error -> {
+                showMessage(sportsResult.error)
+                getErrorState()
+            }
+            is Result.Success -> {
+                getDataState(sportsResult.data, expandedMap)
+            }
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SportsUiState(isLoading = true))
+
+    private fun getErrorState(): SportsUiState {
+        return SportsUiState(
+            sports = emptyList(),
+            isLoading = false,
+            isError = true
+        )
     }
 
-    private fun loadSports() {
-        viewModelScope.launch {
-            repository.getSportsWithFavoriteEvents()
-                .onStart {
-                    _uiState.update { it.copy(isLoading = true, isError = false) }
-                }.collect { result ->
-                    when (result) {
-                        is Result.Error -> onError(result.error)
-                        is Result.Success -> onDataLoaded(result.data)
-                    }
-                }
-        }
+    private fun getDataState(sports: List<Sport>, expandedMap: Map<String, Boolean>): SportsUiState {
+        return SportsUiState(
+            sports = sports.map { it.toUI(123, expandedMap) },
+            isLoading = false,
+            isError = false
+        )
     }
 
-    private fun onDataLoaded(sports: List<Sport>) {
-        _uiState.update { state ->
-            state.copy(
-                isLoading = false,
-                isError = false,
-                sports = sports.map { it.toUI(23452345) }
-            )
-        }
-    }
-
-    private fun onError(message: DataError) {
-        _uiState.update { state ->
-            state.copy(
-                isLoading = false,
-                isError = true
-            )
-        }
+    private fun showMessage(message: DataError) {
         viewModelScope.launch {
             _events.emit(SportEvent.ShowSnackbar(message.asUiText()))
         }
@@ -85,7 +81,7 @@ class SportsViewModel @Inject constructor(
                 }
             }
             SportAction.Refresh -> {
-                loadSports()
+                //loadSports()
             }
         }
     }

@@ -113,10 +113,6 @@ fun SportsScreen(
                 )
             }
 
-            state.sports.isEmpty() -> {
-                EmptyStateUI()
-            }
-
             else -> {
                 SportsList(
                     paddingValues = paddingValues,
@@ -134,24 +130,28 @@ fun SportsList(
     state: SportsUiState,
     onAction: (SportAction) -> Unit
 ) {
-    LazyColumn(
-        contentPadding = paddingValues,
-        modifier = Modifier.fillMaxSize().background(Gray)
-    ) {
-        item {
-            Spacer(
-                modifier = Modifier.fillMaxWidth()
-                    .height(8.dp)
-                    .background(Gray))
-        }
-        items(
-            state.sports,
-            key = { it.id }
-        ) { sport ->
-            SportItem(
-                sport = sport,
-                onAction = onAction
-            )
+    if (state.sports.isEmpty()) {
+        EmptyStateUI()
+    } else {
+        LazyColumn(
+            contentPadding = paddingValues,
+            modifier = Modifier.fillMaxSize().background(Gray)
+        ) {
+            item {
+                Spacer(
+                    modifier = Modifier.fillMaxWidth()
+                        .height(8.dp)
+                        .background(Gray))
+            }
+            items(
+                state.sports,
+                key = { it.id }
+            ) { sport ->
+                SportItem(
+                    sport = sport,
+                    onAction = onAction
+                )
+            }
         }
     }
 }

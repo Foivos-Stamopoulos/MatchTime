@@ -19,11 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,8 +42,6 @@ fun SportItem(
     sport: SportUI,
     onAction: (SportAction) -> Unit
 ) {
-    var expanded by rememberSaveable { mutableStateOf(true) }
-
     Column(
         modifier = modifier.fillMaxWidth().background(Gray).padding(bottom = 24.dp)) {
         Row(
@@ -94,17 +88,19 @@ fun SportItem(
                     }
                 )
 
-                IconButton(onClick = { expanded = !expanded }) {
+                IconButton(onClick = {
+                    onAction(SportAction.OnToggleExpand(sport.id))
+                }) {
                     Icon(
-                        imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                        contentDescription = if (expanded) stringResource(R.string.content_description_collapse_sport) else stringResource(R.string.content_description_expand_sport),
+                        imageVector = if (sport.isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                        contentDescription = if (sport.isExpanded) stringResource(R.string.content_description_collapse_sport) else stringResource(R.string.content_description_expand_sport),
                         tint = Color.Black
                     )
                 }
             }
         }
 
-        if (expanded) {
+        if (sport.isExpanded) {
             val spacing = 8.dp
             val horizontalPadding = 12.dp
             val configuration = LocalConfiguration.current

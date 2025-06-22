@@ -20,11 +20,12 @@ import com.kaizen.matchtime.presentation.model.SportUI
 import com.kaizen.matchtime.presentation.util.UiText
 import java.util.Locale
 
-fun Sport.toUI(nowInSeconds: Long): SportUI {
+fun Sport.toUI(nowInSeconds: Long, expandedMap: Map<String, Boolean>): SportUI {
     return SportUI(
         id = id,
         name = name,
         showOnlyFavorites = false,
+        isExpanded = expandedMap[id] == true,
         icon = SportIconMapper.getIconForSport(id),
         events = activeEvents.map { it.toUI(nowInSeconds) }
     )
