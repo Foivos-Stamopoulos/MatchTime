@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kaizen.matchtime.R
 import com.kaizen.matchtime.presentation.design_system.Blue
+import com.kaizen.matchtime.presentation.design_system.LightGray
 import com.kaizen.matchtime.presentation.design_system.MatchTimeTheme
 import com.kaizen.matchtime.presentation.design_system.Red
 import com.kaizen.matchtime.presentation.design_system.Yellow
@@ -61,7 +62,7 @@ fun EventGridItem(
         Icon(
             imageVector = if (event.isFavorite) Icons.Default.Star else Icons.Outlined.StarBorder,
             contentDescription = if (event.isFavorite) stringResource(R.string.content_description_remove_from_favorites) else stringResource(R.string.content_description_add_to_favorites),
-            tint = Yellow,
+            tint = if (event.isFavorite) Yellow else LightGray,
             modifier = Modifier.size(24.dp).clickable {
                 onAction(SportAction.OnEventFavoriteClick(event.id, !event.isFavorite))
             }

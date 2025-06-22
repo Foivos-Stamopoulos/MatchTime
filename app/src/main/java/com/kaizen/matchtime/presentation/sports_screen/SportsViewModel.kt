@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SportsViewModel @Inject constructor(
-    repository: SportRepository
+    private val repository: SportRepository
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<SportEvent>()
@@ -79,7 +79,7 @@ class SportsViewModel @Inject constructor(
 
     fun onAction(action: SportAction) {
         when (action) {
-            is SportAction.OnEventFavoriteClick -> TODO()
+            is SportAction.OnEventFavoriteClick -> onEventFavoriteClick(action.eventId, action.isNowFavorite)
             is SportAction.OnToggleFilterFavoriteEvents -> TODO()
             is SportAction.OnToggleExpand -> {
                 expandedStates.update { current ->
@@ -91,6 +91,12 @@ class SportsViewModel @Inject constructor(
             SportAction.Refresh -> {
                 //loadSports()
             }
+        }
+    }
+
+    private fun onEventFavoriteClick(eventId: String, isNowFavorite: Boolean) {
+        viewModelScope.launch {
+            repository.setFavoriteEvent(eventId, isNowFavorite)
         }
     }
 

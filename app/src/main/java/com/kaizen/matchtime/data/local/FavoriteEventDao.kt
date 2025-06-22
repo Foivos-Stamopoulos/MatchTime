@@ -13,8 +13,8 @@ interface FavoriteEventDao {
     fun getFavoriteEventIdsFlow(): Flow<List<String>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertFavoriteEventId(entity: FavoriteEventEntity)
+    suspend fun insertFavoriteEventId(entity: FavoriteEventEntity)
 
     @Query("DELETE FROM favorite_events WHERE eventId = :eventId")
-    fun deleteById(eventId: String)
+    suspend fun deleteById(eventId: String)
 }

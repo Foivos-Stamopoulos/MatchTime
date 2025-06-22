@@ -123,7 +123,7 @@ fun SportItem(
                     EventGridItem(
                         modifier = Modifier.width(itemSize),
                         event = event,
-                        onAction = {}
+                        onAction = onAction
                     )
                 }
             }
