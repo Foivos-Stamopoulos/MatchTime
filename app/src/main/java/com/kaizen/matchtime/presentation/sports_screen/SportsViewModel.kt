@@ -33,12 +33,14 @@ class SportsViewModel @Inject constructor(
     val events: SharedFlow<SportEvent> = _events.asSharedFlow()
 
     private val expandedStates = MutableStateFlow<Map<String, Boolean>>(emptyMap())
+    private val favoriteFilterStates = MutableStateFlow<Map<String, Boolean>>(emptyMap())
 
     val uiState: StateFlow<SportsUiState> = combine(
         repository.getSportsWithFavoriteEvents(),
         expandedStates,
-        tickerFlow()
-    ) { sportsResult, expandedMap, nowSeconds ->
+        tickerFlow(),
+        favoriteFilterStates
+    ) { sportsResult, expandedMap, nowSeconds, favoriteMap ->
 
         return@combine when (sportsResult) {
             is Result.Error -> {
@@ -46,7 +48,7 @@ class SportsViewModel @Inject constructor(
                 getErrorState()
             }
             is Result.Success -> {
-                getDataState(sportsResult.data, expandedMap, nowSeconds)
+                getDataState(sportsResult.data, expandedMap, nowSeconds, favoriteMap)
             }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SportsUiState(isLoading = true))
@@ -62,10 +64,11 @@ class SportsViewModel @Inject constructor(
     private fun getDataState(
         sports: List<Sport>,
         expandedMap: Map<String, Boolean>,
-        nowSeconds: Long
+        nowSeconds: Long,
+        favoriteMap: Map<String, Boolean>
     ): SportsUiState {
         return SportsUiState(
-            sports = sports.map { it.toUI(nowSeconds, expandedMap) },
+            sports = sports.map { it.toUI(nowSeconds, expandedMap, favoriteMap) },
             isLoading = false,
             isError = false
         )
@@ -80,16 +83,26 @@ class SportsViewModel @Inject constructor(
     fun onAction(action: SportAction) {
         when (action) {
             is SportAction.OnEventFavoriteClick -> onEventFavoriteClick(action.eventId, action.isNowFavorite)
-            is SportAction.OnToggleFilterFavoriteEvents -> TODO()
-            is SportAction.OnToggleExpand -> {
-                expandedStates.update { current ->
-                    current.toMutableMap().apply {
-                        this[action.sportId] = !(this[action.sportId] ?: false)
-                    }
-                }
-            }
+            is SportAction.OnToggleFilterFavoriteEvents -> onToggleFilterFavoriteEvents(action.sportId)
+            is SportAction.OnToggleExpand -> onToggleExpand(action.sportId)
             SportAction.Refresh -> {
                 //loadSports()
+            }
+        }
+    }
+
+    private fun onToggleFilterFavoriteEvents(sportId: String) {
+        favoriteFilterStates.update { current ->
+            current.toMutableMap().apply {
+                this[sportId] = !(this[sportId] ?: false)
+            }
+        }
+    }
+
+    private fun onToggleExpand(sportId: String) {
+        expandedStates.update { current ->
+            current.toMutableMap().apply {
+                this[sportId] = !(this[sportId] ?: false)
             }
         }
     }

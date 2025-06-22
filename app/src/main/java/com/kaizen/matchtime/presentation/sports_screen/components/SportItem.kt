@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -43,7 +45,9 @@ fun SportItem(
     onAction: (SportAction) -> Unit
 ) {
     Column(
-        modifier = modifier.fillMaxWidth().background(Gray).padding(bottom = 24.dp)) {
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Gray)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -77,7 +81,7 @@ fun SportItem(
                 Switch(
                     checked = sport.showOnlyFavorites,
                     onCheckedChange = {
-                        onAction(SportAction.OnToggleFilterFavoriteEvents(sport.id, sport.showOnlyFavorites))
+                        onAction(SportAction.OnToggleFilterFavoriteEvents(sport.id))
                                       },
                     thumbContent = {
                         Icon(
@@ -103,28 +107,41 @@ fun SportItem(
         if (sport.isExpanded) {
             val spacing = 8.dp
             val horizontalPadding = 12.dp
+            val itemsPerRow = 4
             val configuration = LocalConfiguration.current
             val screenWidthDp = configuration.screenWidthDp.dp - horizontalPadding.times(2)
 
             val itemSize = remember(screenWidthDp) {
                 val totalSpacing = spacing * 3
-                (screenWidthDp - totalSpacing) / 4
+                (screenWidthDp - totalSpacing) / itemsPerRow
             }
 
-            FlowRow(
-                modifier = Modifier.background(Gray)
-                    .fillMaxWidth()
-                    .padding(horizontal = horizontalPadding, vertical = 8.dp),
-                maxItemsInEachRow = 4,
-                horizontalArrangement = Arrangement.spacedBy(spacing),
-                verticalArrangement = Arrangement.spacedBy(spacing)
-            ) {
-                sport.events.forEach { event ->
-                    EventGridItem(
-                        modifier = Modifier.width(itemSize),
-                        event = event,
-                        onAction = onAction
-                    )
+            if (sport.events.isEmpty()) {
+                val text = if (sport.showOnlyFavorites) stringResource(R.string.label_no_favorite_events) else stringResource(R.string.label_no_events)
+                Text(
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    text = text,
+                    color = Color.White,
+                    style = MaterialTheme.typography.labelMedium,
+                    textAlign = TextAlign.Center
+                )
+            } else {
+                FlowRow(
+                    modifier = Modifier
+                        .background(Gray)
+                        .fillMaxWidth()
+                        .padding(horizontal = horizontalPadding, vertical = 8.dp),
+                    maxItemsInEachRow = 4,
+                    horizontalArrangement = Arrangement.spacedBy(spacing),
+                    verticalArrangement = Arrangement.spacedBy(spacing)
+                ) {
+                    sport.events.forEach { event ->
+                        EventGridItem(
+                            modifier = Modifier.width(itemSize),
+                            event = event,
+                            onAction = onAction
+                        )
+                    }
                 }
             }
         }
@@ -138,6 +155,33 @@ fun SportItemPreview(@PreviewParameter(SportProvider::class) sports: List<SportU
         SportItem(
             modifier = Modifier,
             sport = sports.first(),
+            onAction = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun SportItemFilterFavoritesEnabledPreview(@PreviewParameter(SportProvider::class) sports: List<SportUI>) {
+    val sport = sports.first()
+    val event = sport.events.first().copy(isFavorite = true)
+    MatchTimeTheme {
+        SportItem(
+            modifier = Modifier,
+            sport = sport.copy(showOnlyFavorites = true, events = listOf(event)),
+            onAction = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun SportItemNoFavoritesPreview(@PreviewParameter(SportProvider::class) sports: List<SportUI>) {
+    val sport = sports.first()
+    MatchTimeTheme {
+        SportItem(
+            modifier = Modifier,
+            sport = sport.copy(showOnlyFavorites = true, events = emptyList()),
             onAction = {}
         )
     }

@@ -8,10 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.SportsBasketball
-import androidx.compose.material.icons.filled.SportsSoccer
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -24,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,13 +36,11 @@ import com.kaizen.matchtime.R
 import com.kaizen.matchtime.presentation.design_system.Blue
 import com.kaizen.matchtime.presentation.design_system.Gray
 import com.kaizen.matchtime.presentation.design_system.MatchTimeTheme
-import com.kaizen.matchtime.presentation.model.EventUI
 import com.kaizen.matchtime.presentation.model.SportUI
 import com.kaizen.matchtime.presentation.sports_screen.components.EmptyStateUI
 import com.kaizen.matchtime.presentation.sports_screen.components.ErrorUI
 import com.kaizen.matchtime.presentation.sports_screen.components.SportItem
 import com.kaizen.matchtime.presentation.sports_screen.preview.SportProvider
-import com.kaizen.matchtime.presentation.util.UiText
 
 @Composable
 fun SportsScreenRoot(
@@ -137,20 +131,23 @@ fun SportsList(
             contentPadding = paddingValues,
             modifier = Modifier.fillMaxSize().background(Gray)
         ) {
-            item {
-                Spacer(
-                    modifier = Modifier.fillMaxWidth()
-                        .height(8.dp)
-                        .background(Gray))
-            }
-            items(
-                state.sports,
-                key = { it.id }
-            ) { sport ->
+            itemsIndexed(
+                items = state.sports,
+                key = { _, item ->
+                    item.id
+                }) { index, item ->
+                if (index == 0) {
+                    Spacer(
+                        modifier = Modifier.fillMaxWidth()
+                            .height(8.dp)
+                            .background(Gray))
+                }
                 SportItem(
-                    sport = sport,
+                    sport = item,
                     onAction = onAction
                 )
+                Spacer(modifier = Modifier.height(16.dp).fillMaxWidth().background(Gray))
+
             }
         }
     }

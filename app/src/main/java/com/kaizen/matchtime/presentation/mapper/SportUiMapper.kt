@@ -20,14 +20,19 @@ import com.kaizen.matchtime.presentation.model.SportUI
 import com.kaizen.matchtime.presentation.util.UiText
 import java.util.Locale
 
-fun Sport.toUI(nowInSeconds: Long, expandedMap: Map<String, Boolean>): SportUI {
+fun Sport.toUI(
+    nowInSeconds: Long,
+    expandedMap: Map<String, Boolean>,
+    favoriteMap: Map<String, Boolean>): SportUI {
+    val showOnlyFavorites = favoriteMap[id] == true
+    val events = if (showOnlyFavorites) activeEvents.filter { it.isFavorite } else activeEvents
     return SportUI(
         id = id,
         name = name,
-        showOnlyFavorites = false,
+        showOnlyFavorites = showOnlyFavorites,
         isExpanded = expandedMap[id] == true,
         icon = SportIconMapper.getIconForSport(id),
-        events = activeEvents.map { it.toUI(nowInSeconds) }
+        events = events.map { it.toUI(nowInSeconds) }
     )
 }
 
