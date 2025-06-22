@@ -1,5 +1,6 @@
 package com.kaizen.matchtime.presentation.sports_screen.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -158,7 +159,8 @@ fun SportItem(
     }
 }
 
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark mode")
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, name = "Light mode")
 @Composable
 fun SportItemPreview(@PreviewParameter(SportProvider::class) sports: List<SportUI>) {
     MatchTimeTheme {
@@ -170,7 +172,8 @@ fun SportItemPreview(@PreviewParameter(SportProvider::class) sports: List<SportU
     }
 }
 
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark mode")
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, name = "Light mode")
 @Composable
 fun SportItemFilterFavoritesEnabledPreview(@PreviewParameter(SportProvider::class) sports: List<SportUI>) {
     val sport = sports.first()
@@ -184,7 +187,8 @@ fun SportItemFilterFavoritesEnabledPreview(@PreviewParameter(SportProvider::clas
     }
 }
 
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark mode")
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, name = "Light mode")
 @Composable
 fun SportItemNoFavoritesPreview(@PreviewParameter(SportProvider::class) sports: List<SportUI>) {
     val sport = sports.first()

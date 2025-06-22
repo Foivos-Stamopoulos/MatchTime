@@ -1,5 +1,7 @@
 package com.kaizen.matchtime.presentation.sports_screen.components
 
+import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -40,6 +42,7 @@ fun EventGridItem(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
             .padding(4.dp)
     ) {
         Text(
@@ -111,7 +114,8 @@ fun EventGridFavoriteItemPreview() {
     }
 }
 
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark mode")
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, name = "Light mode")
 @Composable
 fun EventGridUnFavoriteItemPreview() {
     MatchTimeTheme {
