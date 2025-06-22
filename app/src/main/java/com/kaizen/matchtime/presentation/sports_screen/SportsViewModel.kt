@@ -9,6 +9,7 @@ import com.kaizen.matchtime.domain.util.Result
 import com.kaizen.matchtime.presentation.mapper.toUI
 import com.kaizen.matchtime.presentation.util.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,7 +19,10 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -34,24 +38,34 @@ class SportsViewModel @Inject constructor(
 
     private val expandedStates = MutableStateFlow<Map<String, Boolean>>(emptyMap())
     private val favoriteFilterStates = MutableStateFlow<Map<String, Boolean>>(emptyMap())
+    private val reloadDataTrigger = MutableSharedFlow<Unit>(replay = 0)
 
-    val uiState: StateFlow<SportsUiState> = combine(
-        repository.getSportsWithFavoriteEvents(),
-        expandedStates,
-        tickerFlow(),
-        favoriteFilterStates
-    ) { sportsResult, expandedMap, nowSeconds, favoriteMap ->
-
-        return@combine when (sportsResult) {
-            is Result.Error -> {
-                showMessage(sportsResult.error)
-                getErrorState()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val uiState: StateFlow<SportsUiState> = reloadDataTrigger
+        .onStart { emit(Unit) }
+        .flatMapLatest {
+        repository.getSportsWithFavoriteEvents()
+    }.flatMapLatest { sportsResult ->
+            when (sportsResult) {
+                is Result.Error -> {
+                    showMessage(sportsResult.error)
+                    flowOf(getErrorState())
+                }
+                is Result.Success -> {
+                    combine(
+                        tickerFlow(),
+                        expandedStates,
+                        favoriteFilterStates
+                    ) { nowSeconds, expandedMap, favoriteMap ->
+                        getDataState(sportsResult.data, expandedMap, favoriteMap, nowSeconds)
+                    }
+                }
             }
-            is Result.Success -> {
-                getDataState(sportsResult.data, expandedMap, nowSeconds, favoriteMap)
-            }
-        }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SportsUiState(isLoading = true))
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            SportsUiState(isLoading = true)
+        )
 
     private fun getErrorState(): SportsUiState {
         return SportsUiState(
@@ -64,8 +78,8 @@ class SportsViewModel @Inject constructor(
     private fun getDataState(
         sports: List<Sport>,
         expandedMap: Map<String, Boolean>,
-        nowSeconds: Long,
-        favoriteMap: Map<String, Boolean>
+        favoriteMap: Map<String, Boolean>,
+        nowSeconds: Long
     ): SportsUiState {
         return SportsUiState(
             sports = sports.map { it.toUI(nowSeconds, expandedMap, favoriteMap) },
@@ -86,8 +100,14 @@ class SportsViewModel @Inject constructor(
             is SportAction.OnToggleFilterFavoriteEvents -> onToggleFilterFavoriteEvents(action.sportId)
             is SportAction.OnToggleExpand -> onToggleExpand(action.sportId)
             SportAction.Refresh -> {
-                //loadSports()
+                reloadData()
             }
+        }
+    }
+
+    private fun reloadData() {
+        viewModelScope.launch {
+            reloadDataTrigger.emit(Unit)
         }
     }
 
