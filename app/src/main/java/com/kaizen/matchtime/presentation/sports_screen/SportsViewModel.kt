@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -40,6 +41,9 @@ class SportsViewModel @Inject constructor(
     private val favoriteFilterStates = MutableStateFlow<Map<String, Boolean>>(emptyMap())
     private val reloadDataTrigger = MutableSharedFlow<Unit>(replay = 0)
 
+    private val _now = MutableStateFlow(System.currentTimeMillis() / 1000)
+    private val now: StateFlow<Long> = _now.asStateFlow()
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<SportsUiState> = reloadDataTrigger
         .onStart { emit(Unit) }
@@ -53,7 +57,7 @@ class SportsViewModel @Inject constructor(
                 }
                 is Result.Success -> {
                     combine(
-                        tickerFlow(),
+                        now,
                         expandedStates,
                         favoriteFilterStates
                     ) { nowSeconds, expandedMap, favoriteMap ->
@@ -133,11 +137,15 @@ class SportsViewModel @Inject constructor(
         }
     }
 
-    private fun tickerFlow(intervalMs: Long = 1000L): Flow<Long> = flow {
+    fun tickerFlow(intervalMs: Long = 1000L): Flow<Long> = flow {
         while (true) {
             emit(System.currentTimeMillis() / 1000) // Current time in seconds
             delay(intervalMs)
         }
+    }
+
+    fun updateNow(value: Long) {
+        _now.value = value
     }
 
 }

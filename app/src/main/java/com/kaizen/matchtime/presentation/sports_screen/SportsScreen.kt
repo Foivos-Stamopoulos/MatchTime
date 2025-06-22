@@ -32,6 +32,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import com.kaizen.matchtime.R
 import com.kaizen.matchtime.presentation.design_system.MatchTimeTheme
 import com.kaizen.matchtime.presentation.model.SportUI
@@ -45,6 +48,15 @@ fun SportsScreenRoot(
     viewModel: SportsViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    LaunchedEffect(Unit) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.tickerFlow().collect { now ->
+                viewModel.updateNow(now)
+            }
+        }
+    }
 
     val context = LocalContext.current
 
