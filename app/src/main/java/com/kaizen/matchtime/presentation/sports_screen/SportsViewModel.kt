@@ -9,6 +9,8 @@ import com.kaizen.matchtime.domain.util.Result
 import com.kaizen.matchtime.presentation.mapper.toUI
 import com.kaizen.matchtime.presentation.util.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -16,6 +18,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -34,7 +37,8 @@ class SportsViewModel @Inject constructor(
     val uiState: StateFlow<SportsUiState> = combine(
         repository.getSportsWithFavoriteEvents(),
         expandedStates,
-    ) { sportsResult, expandedMap ->
+        tickerFlow()
+    ) { sportsResult, expandedMap, nowSeconds ->
 
         return@combine when (sportsResult) {
             is Result.Error -> {
@@ -42,7 +46,7 @@ class SportsViewModel @Inject constructor(
                 getErrorState()
             }
             is Result.Success -> {
-                getDataState(sportsResult.data, expandedMap)
+                getDataState(sportsResult.data, expandedMap, nowSeconds)
             }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SportsUiState(isLoading = true))
@@ -55,9 +59,13 @@ class SportsViewModel @Inject constructor(
         )
     }
 
-    private fun getDataState(sports: List<Sport>, expandedMap: Map<String, Boolean>): SportsUiState {
+    private fun getDataState(
+        sports: List<Sport>,
+        expandedMap: Map<String, Boolean>,
+        nowSeconds: Long
+    ): SportsUiState {
         return SportsUiState(
-            sports = sports.map { it.toUI(123, expandedMap) },
+            sports = sports.map { it.toUI(nowSeconds, expandedMap) },
             isLoading = false,
             isError = false
         )
@@ -83,6 +91,13 @@ class SportsViewModel @Inject constructor(
             SportAction.Refresh -> {
                 //loadSports()
             }
+        }
+    }
+
+    private fun tickerFlow(intervalMs: Long = 1000L): Flow<Long> = flow {
+        while (true) {
+            emit(System.currentTimeMillis() / 1000) // Current time in seconds
+            delay(intervalMs)
         }
     }
 

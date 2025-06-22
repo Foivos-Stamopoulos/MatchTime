@@ -55,7 +55,7 @@ private fun String.toCompetitorNames(): Pair<String, String> {
 }
 
 private fun formatCountdown(startTimeInSeconds: Long, nowInSeconds: Long): UiText {
-    val secondsLeft = nowInSeconds - startTimeInSeconds
+    val secondsLeft = startTimeInSeconds - nowInSeconds
     if (secondsLeft <= 0) return UiText.StringResource(R.string.label_started)
     val h = secondsLeft / 3600
     val m = (secondsLeft % 3600) / 60
