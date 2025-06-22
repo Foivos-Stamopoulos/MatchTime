@@ -42,6 +42,7 @@ import com.kaizen.matchtime.presentation.design_system.Gray
 import com.kaizen.matchtime.presentation.design_system.MatchTimeTheme
 import com.kaizen.matchtime.presentation.model.EventUI
 import com.kaizen.matchtime.presentation.model.SportUI
+import com.kaizen.matchtime.presentation.sports_screen.components.EmptyStateUI
 import com.kaizen.matchtime.presentation.sports_screen.components.ErrorUI
 import com.kaizen.matchtime.presentation.sports_screen.components.SportItem
 import com.kaizen.matchtime.presentation.sports_screen.preview.SportProvider
@@ -110,6 +111,10 @@ fun SportsScreen(
                     paddingValues = paddingValues,
                     onAction = onAction
                 )
+            }
+
+            state.sports.isEmpty() -> {
+                EmptyStateUI()
             }
 
             else -> {
@@ -192,6 +197,23 @@ fun SportsScreenErrorPreview() {
             state = SportsUiState(
                 isLoading = false,
                 isError = true,
+                sports = emptyList()
+            ),
+            snackbarHostState = snackbarHostState,
+            onAction = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun NoSportsScreenPreview() {
+    MatchTimeTheme {
+        val snackbarHostState = remember { SnackbarHostState() }
+        SportsScreen(
+            state = SportsUiState(
+                isLoading = false,
+                isError = false,
                 sports = emptyList()
             ),
             snackbarHostState = snackbarHostState,
