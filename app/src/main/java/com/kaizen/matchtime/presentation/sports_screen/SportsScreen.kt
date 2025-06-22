@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -24,7 +25,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,8 +33,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kaizen.matchtime.R
-import com.kaizen.matchtime.presentation.design_system.Blue
-import com.kaizen.matchtime.presentation.design_system.Gray
 import com.kaizen.matchtime.presentation.design_system.MatchTimeTheme
 import com.kaizen.matchtime.presentation.model.SportUI
 import com.kaizen.matchtime.presentation.sports_screen.components.EmptyStateUI
@@ -78,12 +76,12 @@ fun SportsScreen(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Blue
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 title = {
                     Text(
                         text = stringResource(R.string.app_name),
-                        color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -94,7 +92,7 @@ fun SportsScreen(
 
         when {
             state.isLoading -> {
-                Box(Modifier.fillMaxSize().background(Gray),
+                Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
                     contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
@@ -129,7 +127,9 @@ fun SportsList(
     } else {
         LazyColumn(
             contentPadding = paddingValues,
-            modifier = Modifier.fillMaxSize().background(Gray)
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
         ) {
             itemsIndexed(
                 items = state.sports,
@@ -140,13 +140,13 @@ fun SportsList(
                     Spacer(
                         modifier = Modifier.fillMaxWidth()
                             .height(8.dp)
-                            .background(Gray))
+                            .background(MaterialTheme.colorScheme.background))
                 }
                 SportItem(
                     sport = item,
                     onAction = onAction
                 )
-                Spacer(modifier = Modifier.height(16.dp).fillMaxWidth().background(Gray))
+                Spacer(modifier = Modifier.height(16.dp).fillMaxWidth().background(MaterialTheme.colorScheme.background))
 
             }
         }

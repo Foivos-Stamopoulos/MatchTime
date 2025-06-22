@@ -18,17 +18,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kaizen.matchtime.R
-import com.kaizen.matchtime.presentation.design_system.Blue
 import com.kaizen.matchtime.presentation.design_system.LightGray
 import com.kaizen.matchtime.presentation.design_system.MatchTimeTheme
-import com.kaizen.matchtime.presentation.design_system.Red
 import com.kaizen.matchtime.presentation.design_system.Yellow
 import com.kaizen.matchtime.presentation.model.EventUI
 import com.kaizen.matchtime.presentation.sports_screen.SportAction
@@ -47,10 +44,10 @@ fun EventGridItem(
     ) {
         Text(
             modifier = Modifier.fillMaxWidth()
-                .border(width = 1.dp, color = Blue, RoundedCornerShape(4.dp))
+                .border(width = 1.dp, color = MaterialTheme.colorScheme.primary, RoundedCornerShape(4.dp))
                 .padding(4.dp),
             text = event.countdown.asString(),
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimary,
             style = MaterialTheme.typography.labelMedium,
             textAlign = TextAlign.Center,
             maxLines = 1,
@@ -74,13 +71,13 @@ fun EventGridItem(
             text = event.competitor1,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimary,
             style = MaterialTheme.typography.bodySmall
         )
 
         Text(
             text = stringResource(R.string.label_versus),
-            color = Red,
+            color = MaterialTheme.colorScheme.error,
             style = MaterialTheme.typography.labelSmall
         )
 
@@ -88,7 +85,7 @@ fun EventGridItem(
             text = event.competitor2,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimary,
             style = MaterialTheme.typography.bodySmall
         )
     }

@@ -18,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -32,7 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.kaizen.matchtime.R
-import com.kaizen.matchtime.presentation.design_system.Gray
+import com.kaizen.matchtime.presentation.design_system.LightGray
 import com.kaizen.matchtime.presentation.design_system.MatchTimeTheme
 import com.kaizen.matchtime.presentation.model.SportUI
 import com.kaizen.matchtime.presentation.sports_screen.SportAction
@@ -47,11 +48,11 @@ fun SportItem(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(Gray)) {
+            .background(MaterialTheme.colorScheme.background)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.tertiary)
                 .padding(vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -70,7 +71,7 @@ fun SportItem(
                 Text(
                     text = sport.name,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    color = MaterialTheme.colorScheme.onTertiary
                 )
             }
 
@@ -85,11 +86,20 @@ fun SportItem(
                                       },
                     thumbContent = {
                         Icon(
+                            modifier = Modifier.padding(2.dp),
                             imageVector = Icons.Default.StarRate,
                             contentDescription = stringResource(R.string.content_description_favorite_switch),
-                            tint = if (sport.showOnlyFavorites) Color.Blue else Color.Gray
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
-                    }
+                    },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = MaterialTheme.colorScheme.primary,
+                        uncheckedThumbColor = Color(0xFF797979),
+                        checkedTrackColor = MaterialTheme.colorScheme.background,
+                        uncheckedTrackColor = LightGray,
+                        uncheckedBorderColor = LightGray,
+                        checkedBorderColor = MaterialTheme.colorScheme.background
+                    )
                 )
 
                 IconButton(onClick = {
@@ -98,7 +108,7 @@ fun SportItem(
                     Icon(
                         imageVector = if (sport.isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
                         contentDescription = if (sport.isExpanded) stringResource(R.string.content_description_collapse_sport) else stringResource(R.string.content_description_expand_sport),
-                        tint = Color.Black
+                        tint = MaterialTheme.colorScheme.onTertiary
                     )
                 }
             }
@@ -121,14 +131,14 @@ fun SportItem(
                 Text(
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                     text = text,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.labelMedium,
                     textAlign = TextAlign.Center
                 )
             } else {
                 FlowRow(
                     modifier = Modifier
-                        .background(Gray)
+                        .background(MaterialTheme.colorScheme.background)
                         .fillMaxWidth()
                         .padding(horizontal = horizontalPadding, vertical = 8.dp),
                     maxItemsInEachRow = 4,

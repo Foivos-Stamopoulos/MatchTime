@@ -10,6 +10,7 @@
     <string name="content_description_favorite_switch">filter favorites switch</string>
     <string name="content_description_expand_sport">expand sport content</string>
     <string name="content_description_collapse_sport">collapse sport content</string>
+    <string name="content_description_offline">offline</string>
     <string name="error_can_not_connect">Can\'t connect</string>
     <string name="button_refresh">Refresh</string>
     <string name="label_no_events">No events</string>
