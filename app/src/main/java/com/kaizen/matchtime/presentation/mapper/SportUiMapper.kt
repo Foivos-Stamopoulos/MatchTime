@@ -18,6 +18,7 @@ import com.kaizen.matchtime.domain.model.Sport
 import com.kaizen.matchtime.presentation.model.EventUI
 import com.kaizen.matchtime.presentation.model.SportUI
 import com.kaizen.matchtime.presentation.util.UiText
+import timber.log.Timber
 import java.util.Locale
 
 fun Sport.toUI(
@@ -61,6 +62,7 @@ private fun String.toCompetitorNames(): Pair<String, String> {
 
 private fun formatCountdown(startTimeInSeconds: Long, nowInSeconds: Long): UiText {
     val secondsLeft = startTimeInSeconds - nowInSeconds
+    Timber.d("secondsLeft: $secondsLeft")
     if (secondsLeft <= 0) return UiText.StringResource(R.string.label_started)
     val h = secondsLeft / 3600
     val m = (secondsLeft % 3600) / 60

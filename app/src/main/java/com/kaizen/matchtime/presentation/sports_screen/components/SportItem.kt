@@ -18,8 +18,6 @@ import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -34,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.kaizen.matchtime.R
-import com.kaizen.matchtime.presentation.design_system.LightGray
 import com.kaizen.matchtime.presentation.design_system.MatchTimeTheme
 import com.kaizen.matchtime.presentation.model.SportUI
 import com.kaizen.matchtime.presentation.sports_screen.SportAction
@@ -79,28 +76,19 @@ fun SportItem(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
-                Switch(
+                CustomSwitch(
                     checked = sport.showOnlyFavorites,
                     onCheckedChange = {
                         onAction(SportAction.OnToggleFilterFavoriteEvents(sport.id))
-                                      },
+                    },
                     thumbContent = {
                         Icon(
-                            modifier = Modifier.padding(2.dp),
+                            modifier = Modifier.padding(4.dp),
                             imageVector = Icons.Default.StarRate,
                             contentDescription = stringResource(R.string.content_description_favorite_switch),
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
-                    },
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = MaterialTheme.colorScheme.primary,
-                        uncheckedThumbColor = Color(0xFF797979),
-                        checkedTrackColor = MaterialTheme.colorScheme.background,
-                        uncheckedTrackColor = LightGray,
-                        uncheckedBorderColor = LightGray,
-                        checkedBorderColor = MaterialTheme.colorScheme.background
-                    )
+                    }
                 )
 
                 IconButton(onClick = {
