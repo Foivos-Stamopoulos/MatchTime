@@ -24,16 +24,16 @@ import java.util.Locale
 fun Sport.toUI(
     nowInSeconds: Long,
     expandedMap: Map<String, Boolean>,
-    favoriteMap: Map<String, Boolean>): SportUI {
-    val showOnlyFavorites = favoriteMap[id] == true
-    val events = if (showOnlyFavorites) activeEvents.filter { it.isFavorite } else activeEvents
+    favoriteMap: Map<String, Boolean>,
+    filteredEvents: List<Event>
+): SportUI {
     return SportUI(
         id = id,
         name = name,
-        showOnlyFavorites = showOnlyFavorites,
+        showOnlyFavorites = favoriteMap[id] == true,
         isExpanded = expandedMap[id] == true,
         icon = SportIconMapper.getIconForSport(id),
-        events = events.map { it.toUI(nowInSeconds) }
+        events = filteredEvents.map { it.toUI(nowInSeconds) }
     )
 }
 

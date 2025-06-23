@@ -84,6 +84,7 @@ dependencies {
 
     // Local unit tests
     testImplementation(libs.junit)
+    testImplementation(libs.io.mockK)
 
     // Instrumented tests
     androidTestImplementation(libs.androidx.junit)

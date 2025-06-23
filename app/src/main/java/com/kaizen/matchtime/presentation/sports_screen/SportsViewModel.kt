@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaizen.matchtime.domain.model.Sport
 import com.kaizen.matchtime.domain.repository.SportRepository
+import com.kaizen.matchtime.domain.use_case.FilterEventsUseCase
 import com.kaizen.matchtime.domain.util.DataError
 import com.kaizen.matchtime.domain.util.Result
 import com.kaizen.matchtime.presentation.mapper.toUI
@@ -31,7 +32,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SportsViewModel @Inject constructor(
-    private val repository: SportRepository
+    private val repository: SportRepository,
+    private val filterEventsUseCase: FilterEventsUseCase
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<SportEvent>()
@@ -86,7 +88,14 @@ class SportsViewModel @Inject constructor(
         nowSeconds: Long
     ): SportsUiState {
         return SportsUiState(
-            sports = sports.map { it.toUI(nowSeconds, expandedMap, favoriteMap) },
+            sports = sports.map { sport ->
+                sport.toUI(
+                    nowSeconds,
+                    expandedMap,
+                    favoriteMap,
+                    filterEventsUseCase(sport, favoriteMap)
+                )
+            },
             isLoading = false,
             isError = false
         )
