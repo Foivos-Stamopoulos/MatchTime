@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,6 +43,7 @@ import com.kaizen.matchtime.presentation.sports_screen.components.EmptyStateUI
 import com.kaizen.matchtime.presentation.sports_screen.components.ErrorUI
 import com.kaizen.matchtime.presentation.sports_screen.components.SportItem
 import com.kaizen.matchtime.presentation.sports_screen.preview.SportProvider
+import com.kaizen.matchtime.presentation.util.TestTags
 
 @Composable
 fun SportsScreenRoot(
@@ -106,12 +108,15 @@ fun SportsScreen(
             state.isLoading -> {
                 Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
                     contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(
+                        modifier = Modifier.testTag(TestTags.LOADER)
+                    )
                 }
             }
 
             state.isError -> {
                 ErrorUI(
+                    modifier = Modifier.testTag(TestTags.ERROR_UI),
                     paddingValues = paddingValues,
                     onAction = onAction
                 )
@@ -166,6 +171,8 @@ fun SportsList(
 }
 
 @Preview
+@Preview(name = "Phone", device = "spec:width=360dp,height=640dp")
+@Preview(name = "Tablet", device = "spec:width=800dp,height=1280dp")
 @Composable
 fun SportsScreenPreview(@PreviewParameter(SportProvider::class) sports: List<SportUI>) {
     MatchTimeTheme {

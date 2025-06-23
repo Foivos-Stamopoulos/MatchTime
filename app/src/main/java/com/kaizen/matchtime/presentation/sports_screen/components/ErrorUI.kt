@@ -28,11 +28,12 @@ import com.kaizen.matchtime.presentation.sports_screen.SportAction
 
 @Composable
 fun ErrorUI(
+    modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
     onAction: (SportAction) -> Unit
 ) {
     Box(
-        Modifier
+        modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(paddingValues),

@@ -17,6 +17,8 @@ room = "2.7.1"
 materialIconsExtended = "1.7.8"
 mockK = "1.13.12"
 turbine = "1.0.0"
+uiTestJunit4 = "1.8.3"
+uiTestManifest = "1.8.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +48,9 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 io-mockK = { group = "io.mockk", name = "mockk", version.ref = "mockK" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "uiTestJunit4" }
+ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "uiTestManifest" }
+dagger-hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hiltAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
