@@ -19,7 +19,7 @@ This is a single Activity app that follows best practices like:
 - Model-View-Intent (MVI)
 - Dependency Injection (DI) -> Hilt
 
-- ## UI
+## UI
 
 The app was designed using Material 3.
 
