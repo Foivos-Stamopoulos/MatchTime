@@ -85,6 +85,8 @@ dependencies {
     // Local unit tests
     testImplementation(libs.junit)
     testImplementation(libs.io.mockK)
+    testImplementation(libs.turbine)
+    testImplementation(libs.kotlinx.coroutines.test)
 
     // Instrumented tests
     androidTestImplementation(libs.androidx.junit)

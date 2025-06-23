@@ -60,7 +60,7 @@ private fun String.toCompetitorNames(): Pair<String, String> {
     }
 }
 
-private fun formatCountdown(startTimeInSeconds: Long, nowInSeconds: Long): UiText {
+internal fun formatCountdown(startTimeInSeconds: Long, nowInSeconds: Long): UiText {
     val secondsLeft = startTimeInSeconds - nowInSeconds
     Timber.d("secondsLeft: $secondsLeft")
     if (secondsLeft <= 0) return UiText.StringResource(R.string.label_started)
