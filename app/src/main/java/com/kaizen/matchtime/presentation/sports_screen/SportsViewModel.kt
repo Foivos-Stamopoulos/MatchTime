@@ -2,14 +2,18 @@ package com.kaizen.matchtime.presentation.sports_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kaizen.matchtime.R
+import com.kaizen.matchtime.app.di.IoDispatcher
 import com.kaizen.matchtime.domain.model.Sport
 import com.kaizen.matchtime.domain.repository.SportRepository
 import com.kaizen.matchtime.domain.use_case.FilterEventsUseCase
 import com.kaizen.matchtime.domain.util.DataError
 import com.kaizen.matchtime.domain.util.Result
 import com.kaizen.matchtime.presentation.mapper.toUI
+import com.kaizen.matchtime.presentation.util.UiText
 import com.kaizen.matchtime.presentation.util.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -20,20 +24,24 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class SportsViewModel @Inject constructor(
     private val repository: SportRepository,
-    private val filterEventsUseCase: FilterEventsUseCase
+    private val filterEventsUseCase: FilterEventsUseCase,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<SportEvent>()
@@ -50,27 +58,36 @@ class SportsViewModel @Inject constructor(
     val uiState: StateFlow<SportsUiState> = reloadDataTrigger
         .onStart { emit(Unit) }
         .flatMapLatest {
-        repository.getSportsWithFavoriteEvents()
-    }.flatMapLatest { sportsResult ->
-            when (sportsResult) {
-                is Result.Error -> {
-                    showMessage(sportsResult.error)
-                    flowOf(getErrorState())
-                }
-                is Result.Success -> {
-                    combine(
-                        now,
-                        expandedStates,
-                        favoriteFilterStates
-                    ) { nowSeconds, expandedMap, favoriteMap ->
-                        getDataState(sportsResult.data, expandedMap, favoriteMap, nowSeconds)
+            repository.getSportsWithFavoriteEvents()
+                .flatMapLatest { sportsResult ->
+                    when (sportsResult) {
+                        is Result.Error -> {
+                            showMessage(sportsResult.error)
+                            flowOf(getErrorState())
+                        }
+                        is Result.Success -> {
+                            combine(
+                                now,
+                                expandedStates,
+                                favoriteFilterStates
+                            ) { nowSeconds, expandedMap, favoriteMap ->
+                                getDataState(sportsResult.data, expandedMap, favoriteMap, nowSeconds)
+                            }
+                        }
                     }
                 }
-            }
-        }.stateIn(
+                .onStart { emit(SportsUiState(isLoading = true)) }
+                .catch { throwable ->
+                    Timber.d("In flow exception: $throwable")
+                    emit(SportsUiState(isError = true))
+                    _events.emit(SportEvent.ShowSnackbar(UiText.StringResource(R.string.error_unknown)))
+                }
+        }
+        .flowOn(ioDispatcher)
+        .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            SportsUiState(isLoading = true)
+            SportsUiState()
         )
 
     private fun getErrorState(): SportsUiState {
