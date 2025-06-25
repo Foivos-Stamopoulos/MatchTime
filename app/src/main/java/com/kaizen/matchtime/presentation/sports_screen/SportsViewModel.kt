@@ -1,5 +1,6 @@
 package com.kaizen.matchtime.presentation.sports_screen
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaizen.matchtime.R
@@ -42,17 +43,23 @@ class SportsViewModel @Inject constructor(
     private val repository: SportRepository,
     private val filterEventsUseCase: FilterEventsUseCase,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<SportEvent>()
     val events: SharedFlow<SportEvent> = _events.asSharedFlow()
 
-    private val expandedStates = MutableStateFlow<Map<String, Boolean>>(emptyMap())
-    private val favoriteFilterStates = MutableStateFlow<Map<String, Boolean>>(emptyMap())
+    private val expandedStates = MutableStateFlow(savedStateHandle.get<HashMap<String, Boolean>>(KEY_EXPANDED_MAP)?.toMap() ?: emptyMap())
+    private val favoriteFilterStates = MutableStateFlow(savedStateHandle.get<HashMap<String, Boolean>>(KEY_FAVORITE_MAP)?.toMap() ?: emptyMap())
     private val reloadDataTrigger = MutableSharedFlow<Unit>(replay = 0)
 
     private val _now = MutableStateFlow(System.currentTimeMillis() / 1000)
     private val now: StateFlow<Long> = _now.asStateFlow()
+
+    companion object {
+        private const val KEY_EXPANDED_MAP= "expanded_map"
+        private const val KEY_FAVORITE_MAP= "favorite_map"
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<SportsUiState> = reloadDataTrigger
@@ -145,6 +152,8 @@ class SportsViewModel @Inject constructor(
         favoriteFilterStates.update { current ->
             current.toMutableMap().apply {
                 this[sportId] = !(this[sportId] ?: false)
+            }.also {
+                savedStateHandle[KEY_FAVORITE_MAP] = HashMap(it)
             }
         }
     }
@@ -153,6 +162,8 @@ class SportsViewModel @Inject constructor(
         expandedStates.update { current ->
             current.toMutableMap().apply {
                 this[sportId] = !(this[sportId] ?: false)
+            }.also {
+                savedStateHandle[KEY_EXPANDED_MAP] = HashMap(it)
             }
         }
     }
