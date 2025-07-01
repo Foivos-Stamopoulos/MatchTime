@@ -12,6 +12,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import com.kaizen.matchtime.HiltTestActivity
 import com.kaizen.matchtime.R
+import com.kaizen.matchtime.presentation.design_system.MatchTimeTheme
 import com.kaizen.matchtime.presentation.model.EventUI
 import com.kaizen.matchtime.presentation.model.SportUI
 import com.kaizen.matchtime.presentation.util.TestTags
@@ -23,7 +24,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @HiltAndroidTest
-class SportsScreenTest {
+class SportsScreenUiTest {
 
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
@@ -37,17 +38,44 @@ class SportsScreenTest {
     }
 
     @Test
-    fun sportsList_rendersCorrectly_when_sport_is_expanded() {
+    fun sportsList_renders_correctly_when_sport_is_collapsed() {
         composeTestRule.setContent {
             val snackbarHostState = remember { SnackbarHostState() }
-            SportsScreen(
-                state = SportsUiState(
-                    sports = expandedSportsList,
-                    isLoading = false,
-                    isError = false
-                ),
-                snackbarHostState = snackbarHostState
-            ) { }
+            MatchTimeTheme {
+                SportsScreen(
+                    state = SportsUiState(
+                        sports = collapsedSportsList,
+                        isLoading = false,
+                        isError = false
+                    ),
+                    snackbarHostState = snackbarHostState
+                ) { }
+            }
+        }
+
+        composeTestRule.onNodeWithText("SOCCER").assertIsDisplayed()
+        val expandArrow = composeTestRule.activity.getString(R.string.content_description_expand_sport)
+        composeTestRule.onNodeWithContentDescription(expandArrow).assertIsDisplayed()
+
+        composeTestRule.onNodeWithText("01:22:00").assertIsNotDisplayed()
+        composeTestRule.onNodeWithText("AEK").assertIsNotDisplayed()
+        composeTestRule.onNodeWithText("Olympiakos").assertIsNotDisplayed()
+    }
+
+    @Test
+    fun sportsList_renders_correctly_when_sport_is_expanded() {
+        composeTestRule.setContent {
+            val snackbarHostState = remember { SnackbarHostState() }
+            MatchTimeTheme {
+                SportsScreen(
+                    state = SportsUiState(
+                        sports = expandedSportsList,
+                        isLoading = false,
+                        isError = false
+                    ),
+                    snackbarHostState = snackbarHostState
+                ) { }
+            }
         }
 
         composeTestRule.onNodeWithText("SOCCER").assertIsDisplayed()
@@ -59,39 +87,19 @@ class SportsScreenTest {
     }
 
     @Test
-    fun sportsList_rendersCorrectly_when_sport_is_collapsed() {
-        composeTestRule.setContent {
-            val snackbarHostState = remember { SnackbarHostState() }
-            SportsScreen(
-                state = SportsUiState(
-                    sports = collapsedSportsList,
-                    isLoading = false,
-                    isError = false
-                ),
-                snackbarHostState = snackbarHostState
-            ) { }
-        }
-
-        composeTestRule.onNodeWithText("SOCCER").assertIsDisplayed()
-        val expandArrow = composeTestRule.activity.getString(R.string.content_description_expand_sport)
-        composeTestRule.onNodeWithContentDescription(expandArrow).assertIsDisplayed()
-        composeTestRule.onNodeWithText("01:22:00").assertIsNotDisplayed()
-        composeTestRule.onNodeWithText("AEK").assertIsNotDisplayed()
-        composeTestRule.onNodeWithText("Olympiakos").assertIsNotDisplayed()
-    }
-
-    @Test
     fun progress_indicator_is_displayed_when_screen_is_loading() {
         composeTestRule.setContent {
             val snackbarHostState = remember { SnackbarHostState() }
-            SportsScreen(
-                state = SportsUiState(
-                    sports = emptyList(),
-                    isLoading = true,
-                    isError = false
-                ),
-                snackbarHostState = snackbarHostState
-            ) { }
+            MatchTimeTheme {
+                SportsScreen(
+                    state = SportsUiState(
+                        sports = emptyList(),
+                        isLoading = true,
+                        isError = false
+                    ),
+                    snackbarHostState = snackbarHostState
+                ) { }
+            }
         }
 
         composeTestRule.onNodeWithTag(TestTags.LOADER).assertIsDisplayed()
@@ -101,14 +109,16 @@ class SportsScreenTest {
     fun error_ui_is_displayed_when_state_has_error() {
         composeTestRule.setContent {
             val snackbarHostState = remember { SnackbarHostState() }
-            SportsScreen(
-                state = SportsUiState(
-                    sports = emptyList(),
-                    isLoading = false,
-                    isError = true
-                ),
-                snackbarHostState = snackbarHostState
-            ) { }
+            MatchTimeTheme {
+                SportsScreen(
+                    state = SportsUiState(
+                        sports = emptyList(),
+                        isLoading = false,
+                        isError = true
+                    ),
+                    snackbarHostState = snackbarHostState
+                ) { }
+            }
         }
 
         composeTestRule.onNodeWithTag(TestTags.ERROR_UI).assertIsDisplayed()

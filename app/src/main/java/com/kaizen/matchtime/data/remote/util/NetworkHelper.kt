@@ -3,6 +3,7 @@ package com.kaizen.matchtime.data.remote.util
 import com.kaizen.matchtime.domain.util.DataError
 import com.kaizen.matchtime.domain.util.Result
 import retrofit2.HttpException
+import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
 
 object NetworkHelper {
@@ -18,7 +19,7 @@ object NetworkHelper {
 
     private fun exceptionToErrorResult(e: Throwable): Result<Nothing, DataError.NetworkError> {
         return when (e) {
-            is UnresolvedAddressException -> {
+            is UnknownHostException -> {
                 Result.Error(DataError.NetworkError.NO_INTERNET)
             }
             is HttpException -> {

@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -31,6 +32,7 @@ import com.kaizen.matchtime.presentation.design_system.MatchTimeTheme
 import com.kaizen.matchtime.presentation.design_system.Yellow
 import com.kaizen.matchtime.presentation.model.EventUI
 import com.kaizen.matchtime.presentation.sports_screen.SportAction
+import com.kaizen.matchtime.presentation.util.TestTags
 import com.kaizen.matchtime.presentation.util.UiText
 
 @Composable
@@ -63,7 +65,8 @@ fun EventGridItem(
             imageVector = if (event.isFavorite) Icons.Default.Star else Icons.Outlined.StarBorder,
             contentDescription = if (event.isFavorite) stringResource(R.string.content_description_remove_from_favorites) else stringResource(R.string.content_description_add_to_favorites),
             tint = if (event.isFavorite) Yellow else LightGray,
-            modifier = Modifier.size(24.dp).clickable {
+            modifier = Modifier.testTag("${TestTags.FAVORITE_STAR}_${event.id}")
+                .size(24.dp).clickable {
                 onAction(SportAction.OnEventFavoriteClick(event.id, !event.isFavorite))
             }
         )

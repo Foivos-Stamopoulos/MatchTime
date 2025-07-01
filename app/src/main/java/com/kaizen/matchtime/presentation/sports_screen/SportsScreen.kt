@@ -101,7 +101,10 @@ fun SportsScreen(
                 }
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(
+            modifier = Modifier.testTag(TestTags.SNACKBAR_HOST),
+            hostState = snackbarHostState
+        ) }
     ) { paddingValues ->
 
         when {

@@ -94,7 +94,7 @@ class SportsViewModel @Inject constructor(
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            SportsUiState()
+            SportsUiState(isLoading = true)
         )
 
     private fun getErrorState(): SportsUiState {

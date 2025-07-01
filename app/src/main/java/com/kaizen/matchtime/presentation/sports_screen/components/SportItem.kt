@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,6 +37,7 @@ import com.kaizen.matchtime.presentation.design_system.MatchTimeTheme
 import com.kaizen.matchtime.presentation.model.SportUI
 import com.kaizen.matchtime.presentation.sports_screen.SportAction
 import com.kaizen.matchtime.presentation.sports_screen.preview.SportProvider
+import com.kaizen.matchtime.presentation.util.TestTags
 
 @Composable
 fun SportItem(
@@ -77,6 +79,7 @@ fun SportItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 CustomSwitch(
+                    modifier = Modifier.testTag("${TestTags.SWITCH}_${sport.name}"),
                     checked = sport.showOnlyFavorites,
                     onCheckedChange = {
                         onAction(SportAction.OnToggleFilterFavoriteEvents(sport.id))
@@ -95,6 +98,7 @@ fun SportItem(
                     onAction(SportAction.OnToggleExpand(sport.id))
                 }) {
                     Icon(
+                        modifier = Modifier.testTag("${TestTags.EXPAND_COLLAPSE_BUTTON}_${sport.name}"),
                         imageVector = if (sport.isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
                         contentDescription = if (sport.isExpanded) stringResource(R.string.content_description_collapse_sport) else stringResource(R.string.content_description_expand_sport),
                         tint = MaterialTheme.colorScheme.onTertiary
