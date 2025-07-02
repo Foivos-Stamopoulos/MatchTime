@@ -1,5 +1,6 @@
 package com.kaizen.matchtime.presentation.sports_screen
 
+import androidx.activity.ComponentActivity
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SportsSoccer
 import androidx.compose.material3.SnackbarHostState
@@ -10,32 +11,21 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import com.kaizen.matchtime.HiltTestActivity
 import com.kaizen.matchtime.R
 import com.kaizen.matchtime.presentation.design_system.MatchTimeTheme
 import com.kaizen.matchtime.presentation.model.EventUI
 import com.kaizen.matchtime.presentation.model.SportUI
 import com.kaizen.matchtime.presentation.util.TestTags
 import com.kaizen.matchtime.presentation.util.UiText
-import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 @HiltAndroidTest
 class SportsScreenUiTest {
 
-    @get:Rule(order = 0)
-    val hiltRule = HiltAndroidRule(this)
-
-    @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
-
-    @Before
-    fun setup() {
-        hiltRule.inject()
-    }
+    @get:Rule
+    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
     @Test
     fun sportsList_renders_correctly_when_sport_is_collapsed() {
