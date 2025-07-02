@@ -17,11 +17,9 @@ import com.kaizen.matchtime.presentation.model.EventUI
 import com.kaizen.matchtime.presentation.model.SportUI
 import com.kaizen.matchtime.presentation.util.TestTags
 import com.kaizen.matchtime.presentation.util.UiText
-import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Rule
 import org.junit.Test
 
-@HiltAndroidTest
 class SportsScreenUiTest {
 
     @get:Rule
